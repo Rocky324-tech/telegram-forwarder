@@ -1,26 +1,30 @@
-import os
 from pyrogram import Client, filters
-from pyrogram.types import Message
+import os
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-SOURCE_CHAT = int(os.getenv("SOURCE_CHAT"))
-DEST_CHATS = os.getenv("DEST_CHATS").split(",")
+SESSION = os.environ.get("SESSION")
+
+SOURCE_CHAT = -1003798031630  # your source channel
+
+DESTINATION_CHATS = [
+    "t20bapu",
+    "Fan1cricket"
+]
 
 app = Client(
-    "forwarder_bot",
-    bot_token=BOT_TOKEN,
+    "forwarder",
+    session_string=SESSION,
     api_id=39218730,
     api_hash="97ac27160280bf3ece3c3fb85ae22123"
 )
 
 @app.on_message(filters.chat(SOURCE_CHAT))
-async def forward_messages(client, message: Message):
-    for chat_id in DEST_CHATS:
+async def forward(client, message):
+    for dest in DESTINATION_CHATS:
         try:
-            await message.forward(int(chat_id))
-            print(f"Forwarded to {chat_id}")
+            await message.forward(dest)
+            print(f"Forwarded to {dest}")
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error forwarding to {dest}: {e}")
 
 print("Bot started...")
 app.run()
