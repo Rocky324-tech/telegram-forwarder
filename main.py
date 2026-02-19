@@ -1,39 +1,43 @@
 import asyncio
-from pyrogram import Client, filters, idle
-import threading
+from pyrogram import Client, filters
 
+# API details
 api_id = 39218730
 api_hash = "97ac27160280bf3ece3c3fb85ae22123"
 
-SESSION = "BQJWbioAGnVxisRP9gzo4pyJCz1eHrviCVzATI3ogtiyQLT_1jrzCSlJcmT3qOQEyDef1W9btyk3XANpMXDDmiG0Kx5-KUGWmMr0uv6T_fRA8h_KLb1o2itfDp53QhTZtCjDHzxuJXa6XXWqA4lDFqc0RM6khxw9WWILePiduv9jd0qDK2TByN1xUiDamGDsBfVF9u1xHKrJDnIVSi-fahcpp7FVLDq-KZEfrc7wpt23_Zx9j9dKr2kGdwacyVO6oSUxCt9fjbAkMPPVJ4aXBUEerPw-2Mu50eerD1bvvR_ulqrVwYMZh_FF5BT7xn3cBn2JERqeYCiwYIN4q-idGeJawhTyPAAAAAH5OFoHAA"
+# Session string
+session_string = "BQJWbioAdeOTcPy1ha-lnt_D1QkWJzHMADFHY65HchvZ_ft08GuIVo9FoCYxCCrhCGWjjCfJv_IXr8m5N6LRv1xeWBtLoywM6fmprUBKAzIN4tSeokjWUDlwzI1j8bj-U6sB0WkVxtH1jiWk2W6MqdKwWdrdSCGz0bAqmF2UFm_gdMy8LR-zIqIF7h90ONYPgY-qfBH8zIQVEP_NXv6fLTr03t8QnsBLbEcfoNrgca5mQ0NwGQcmuuOtO0fMC49-dwd9QWKjAKZAGi2W9Dni4hVtR9_edVotfinm0DdJ7mHFPjvmA16xtlafXV1oWvwmnM4pL_NiERBUF-KoQFQayxCWT2t78wAAAAH5OFoHAA"
 
-SOURCE = [
+# Multiple sources
+SOURCE_CHATS = [
     -1003798031630,
     -1001912679284
 ]
 
-DESTINATION = -1003889857801
+# Multiple destinations
+DESTINATION_CHATS = [
+    -1003889857801,
+    -1003793224429
+]
 
-# Create event loop manually (Render fix)
-loop = asyncio.new_event_loop()
-asyncio.set_event_loop(loop)
-
+# Create client
 app = Client(
-    SESSION,
+    "forwarder",
     api_id=api_id,
-    api_hash=api_hash
+    api_hash=api_hash,
+    session_string=session_string
 )
 
-@app.on_message(filters.chat(SOURCE))
-async def forward(client, message):
-    try:
-        await message.copy(DESTINATION)
-    except Exception as e:
-        print(e)
+# Turbo forward function
+@app.on_message(filters.chat(SOURCE_CHATS))
+async def forward_messages(client, message):
+    for dest in DESTINATION_CHATS:
+        try:
+            await message.copy(dest)   # copy = no forward tag
+            print(f"Forwarded to {dest}")
+        except Exception as e:
+            print(f"Error sending to {dest}: {e}")
 
-async def main():
-    await app.start()
-    print("Forwarder running 24/7...")
-    await idle()
-
-loop.run_until_complete(main())
+# Run forever
+print("Turbo Forwarder Started Successfully!")
+app.run()
