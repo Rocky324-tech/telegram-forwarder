@@ -9,8 +9,8 @@ DEST_CHATS = os.getenv("DEST_CHATS").split(",")
 app = Client(
     "forwarder_bot",
     bot_token=BOT_TOKEN,
-    api_id=12345,
-    api_hash="0123456789abcdef0123456789abcdef"
+    api_id=39218730,
+    api_hash="97ac27160280bf3ece3c3fb85ae22123"
 )
 
 @app.on_message(filters.chat(SOURCE_CHAT))
