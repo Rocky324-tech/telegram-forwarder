@@ -16,8 +16,7 @@ SESSION_STRING = "BQJWbioAdeOTcPy1ha-lnt_D1QkWJzHMADFHY65HchvZ_ft08GuIVo9FoCYxCC
 # =====================
 
 SOURCE_CHATS = [
-    "livetvo",
-    "CKHzywfhEMxiMTdl"
+    "livetvo"
 ]
 
 DEST_CHATS = [
