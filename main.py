@@ -1,5 +1,6 @@
 import asyncio
 from pyrogram import Client, filters, idle
+import threading
 
 api_id = 39218730
 api_hash = "97ac27160280bf3ece3c3fb85ae22123"
@@ -13,6 +14,10 @@ SOURCE = [
 
 DESTINATION = -1003889857801
 
+# Create event loop manually (Render fix)
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
+
 app = Client(
     SESSION,
     api_id=api_id,
@@ -21,11 +26,14 @@ app = Client(
 
 @app.on_message(filters.chat(SOURCE))
 async def forward(client, message):
-    await message.copy(DESTINATION)
+    try:
+        await message.copy(DESTINATION)
+    except Exception as e:
+        print(e)
 
 async def main():
     await app.start()
-    print("Forwarder running...")
+    print("Forwarder running 24/7...")
     await idle()
 
-asyncio.run(main())
+loop.run_until_complete(main())
